@@ -1,0 +1,140 @@
+
+div.url_input {
+    background-color: #E7EBF2;
+    border-bottom: 1px solid gray;
+    padding-bottom: 15px;
+    padding-top: 60px;
+    position: absolute;
+    text-align: center;
+    width: 100%;
+    z-index: -1;
+}
+.basic_table {
+    display: inline-block;
+    margin-left: 60px;
+    vertical-align: top;
+    width: 50%;
+}
+input#url_input {
+    font-size: 20px;
+    height: 30px;
+    padding: 5px;
+    width: 90%;
+}
+div.side_wrapper {
+    background-color: #FAFAFA;
+    border-left: 1px solid gray;
+    height: 100%;
+    position: fixed;
+    right: 0;
+    top: 0;
+    width: 25%;
+    z-index: 11;
+}
+div.main_content {
+    background-color: #D7DBE0;
+    margin: 122px auto 0px;
+    padding-left: 8%;
+    padding-right: 8%;
+    padding-top: 1px;
+    padding-bottom: 50px;
+    z-index: 0;
+}
+div.main_wrapper {
+    width: 75%;
+}
+div.result_container {
+    background-color: gray;
+    height: 1000px;
+    width: 100%;
+}
+div.item_control {
+    background-color: #E7EBF2;
+    border-top: 1px solid gray;
+    bottom: 0;
+    height: 40px;
+    position: fixed;
+    width: 75%;
+}
+div.vertical_drag_bar {
+    cursor: col-resize;
+    height: 100%;
+    margin-left: -4px;
+    width: 7px;
+}
+div.main_block {
+    background: white;
+    -moz-box-shadow: 0 0 3px #676869;
+    -khtml-box-shadow: 0 0 3px #676869;
+    -webkit-box-shadow: 0 0 3px #676869;
+    box-shadow: 0 0 3px #676869;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    border-radius: 5px;
+    -moz-background-clip: padding-box;
+    -webkit-background-clip: padding-box;
+    background-clip: padding-box;
+    margin-bottom: 20px;
+    margin-top: 20px;
+    position: relative;
+}
+img#item_pic {
+    height: auto;
+    max-width: 400px;
+    -moz-box-shadow: 0 0 3px #676869;
+    -khtml-box-shadow: 0 0 3px #676869;
+    -webkit-box-shadow: 0 0 3px #676869;
+    box-shadow: 0 0 3px #676869;
+    -moz-border-radius: 3px;
+    -webkit-border-radius: 3px;
+    border-radius: 3px;
+    -moz-background-clip: padding-box;
+    -webkit-background-clip: padding-box;
+    background-clip: padding-box;
+}
+div.item_pic {
+    display: inline-block;
+    vertical-align: top;
+}
+.block_header {
+    border-bottom: 1px solid #EAECEE;
+    font-size: 12px;
+    font-weight: bold;
+    line-height: 1.7;
+    padding: 5px;
+}
+.block_content {
+    background-clip: padding-box;
+    border: 1px solid transparent;
+    border-radius: 0 0 0 5px;
+    padding: 10px 10px 6px;
+    position: relative;
+}
+.block_header_icon {
+    background: url("/daigou/application/assets/images/main/icons.png") no-repeat scroll 0 top transparent;
+    float: left;
+    height: 24px;
+    width: 24px;
+}
+#detail.block_header_icon {
+    background-position: -24px top;
+}
+#basic.block_header_icon {
+    background-position: -72px top;
+}
+.block_header_title {
+    color: #555555;
+    float: left;
+    font-size: 14px;
+    line-height: 1.5;
+    margin-left: 5px;
+}
+table#basic_table tr {
+    vertical-align: top;
+}
+span.list_period {
+    float: right;
+    color: gray;
+    margin-right: 10px;
+    font-style: italic;
+}
