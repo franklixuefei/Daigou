@@ -20,7 +20,9 @@ class MY_Controller extends CI_Controller {
     }
 
     public function getUniqueCode($length = "") {
-        $code = md5(uniqid(rand(), true));
+        do {
+            $code = md5(uniqid(rand(), true));
+        } while ($this->db->select()->from('users')->where('token', $code)->count_all_results());
         if ($length != "")
             return substr($code, 0, $length);
         else
@@ -69,11 +71,36 @@ class MY_Controller extends CI_Controller {
     }
 
     public function current_user() {
-        if ($user_cookie = $this->input->cookie('DAIGOU_USER_AUTH_TOKEN')) {
-            $this->db->select('*')->from('users')->where('auth_token', $user_cookie)->limit(1);
-            $query = $this->db->get();
-            $current_user = $query->row();
+        $user_cookie = $this->input->cookie('DAIGOU_USER_TOKEN');
+        if (!$user_cookie) {
+            $token = $this->getUniqueCode();
+            // create user in db with newly generated token
+                // set cookie as token
+            $cookie = array(
+                'name' => 'USER_TOKEN',
+                'value' => "$token",
+                'expire' => '31536000'
+            );
+            $this->input->set_cookie($cookie);
+                // fetch the user according to this token
+            $current_user = $this->db->select('*')->from('users')->where('token', $user_cookie)->limit(1)->row();
             return $current_user; // returns an object
+        } else {
+            $current_user = $this->db->select('*')->from('users')->where('token', $user_cookie)->limit(1)->get()->row();
+            if (!$current_user) {
+                // delete DAIGOU_USER_TOKEN cookie
+                $token = $this->getUniqueCode();
+                // create user in db with newly generated token
+                // set cookie as token
+                $cookie = array(
+                'name' => 'USER_TOKEN',
+                'value' => "$token",
+                'expire' => '31536000'
+                );
+                $this->input->set_cookie($cookie);
+                // fetch the user according to this token
+            }
+            return $current_user;
         }
     }
 

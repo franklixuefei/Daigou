@@ -52,11 +52,12 @@ var Daigou = function() {
                             url: "/daigou/index.php/main/get_result",
                             timeout: 100000,
                             success: function (j) {
-                                
-                                $('div.main_content').text('');
-                                $('div.main_content').children().remove();
-                                showResult(j);
-                                sidebarResizable.reinit();
+                                if (j.item.num_iid == parseInt(URIHelper.lookupQuery(input.val(), 'id'))) { // only show corresponding info
+                                    $('div.main_content').text('');
+                                    $('div.main_content').children().remove();
+                                    showResult(j);
+                                    sidebarResizable.reinit();
+                                }
                             },
                             error: function(jqXHR, textStatus, errorThrown, exception) {
                                 if (textStatus == 'error' && errorThrown == 'Unauthorized') { // CSRF token expired
