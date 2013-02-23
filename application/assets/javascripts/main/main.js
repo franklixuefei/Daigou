@@ -53,6 +53,7 @@ var Daigou = function() {
                             timeout: 100000,
                             success: function (j) {
                                 if (j.item.num_iid == parseInt(URIHelper.lookupQuery(input.val(), 'id'))) { // only show corresponding info
+                                    window.item = j.item;
                                     $('div.main_content').text('');
                                     $('div.main_content').children().remove();
                                     showResult(j);
@@ -87,6 +88,10 @@ var Daigou = function() {
                     
                 } else if (list.item){ // guarantee that item exists.
                     var item = list.item;
+                    var purchase_button = $('<button>').attr('id', 'purchase').text('购买');
+                    purchase_button.bind('click', function() {
+                        controller.purchase();
+                    });
                     var basic_info_container = $('<div>').attr('class', 'basic_info_container main_block').appendTo('div.main_content');
                     basic_info_container
                     .append(
@@ -103,26 +108,40 @@ var Daigou = function() {
                             )
                         .append(
                             $('<div>').attr('class', 'basic_table')
-                            .append($('<h3>').html(item.title + '<span id="stuff_status">'+ (item.stuff_status == 'new'? '全新' : (item.stuff_status == 'unused'? '闲置' : '二手')) +'</span>'+
-                                '<span id="approve_status">'+ (item.approve_status == 'onsale'? '出售中' : '已下架') +'</span>'+
+                            .append($('<h3>').html(item.title + '<span id="stuff_status">'+ (item.stuff_status == 'new'? '<span style="color: green;">[全新]</span>' : (item.stuff_status == 'unused'? '<span style="color: darkgreen;">[闲置]</span>' : '<span style="color: green;">[二手]</span>')) +'</span>'+
+                                '<span id="approve_status">'+ (item.approve_status == 'onsale'? '<span style="color: green;">[出售中]</span>' : '<span style="color: gray;">[已下架]</span>') +'</span>'+
                                 '<span id="detail_url"><a target="_blank" href="'+ item.detail_url +'">[查看商品页面]</a></span>'
                                 ))
                             .append($('<table>').attr('id', 'basic_table')
                                 .append('<tr><td>原价</td><td>'+item.price+' 元</td></tr>'+
                                     '<tr><td>促销</td><td>'+ (item.has_discount? '正在促销<a target="_blank" href="'+ item.detail_url +'">查看促销价</a>' : '无促销活动') +'</td></tr>'+
-                                    '<tr><td>商品所在地</td><td>'+ (item.location) +'</td></tr>'+
-                                    '<tr><td>配送</td><td>'+ (item.post_fee? '平邮：'+item.post_fee+' 元<br/>' : '') + (item.express_fee? '快递：'+ item.express_fee +' 元<br/>' : '') + (item.ems_fee? 'EMS：'+ item.ems_fee +' 元</td>' : '') + '</tr>'
+                                    //'<tr><td>商品所在地</td><td>'+ (item.location) +'</td></tr>'+
+                                    '<tr><td>配送</td><td>'+ (item.post_fee? '平邮：'+item.post_fee+' 元<br/>' : '') + (item.express_fee? '快递：'+ item.express_fee +' 元<br/>' : '') + (item.ems_fee? 'EMS：'+ item.ems_fee +' 元</td>' : '') + '</tr>'+
+                                    '<tr><td>给代购商留言</td><td><textarea id="msg_to_agent" placeholder="请注明商品促销价，以及其他商品具体信息。例如：尺码、颜色、型号等等"></textarea></td>' 
                                     )
                                 )
-                            .append($('<div>').attr('class', 'seller_promises').append(
-                                (item.has_warranty? $('<img class="seller_promises_icons">').attr('id', 'warranty').attr('src', '/daigou/application/assets/images/main/warranty.png') : '')
-                                ).append(
-                                (item.has_invoice? $('<img class="seller_promises_icons">').attr('id', 'invoice').attr('src', '/daigou/application/assets/images/main/invoice.png') : '')
-                                ).append(
-                                (item.sell_promise? $('<img class="seller_promises_icons">').attr('id', 'sell_promise').attr('src', '/daigou/application/assets/images/main/return.png') : '')
-                                )
+                            .append(
+                                $('<div>').attr('class', 'button_wrapper')
+                                .append(
+                                    $('<span>').attr('id', 'amount_container')
+                                    .append(
+                                        '<span id="amount">数量：</span><input id="amount_input" type="number" min="0" max="'+ (parseInt(item.num)-parseInt(item.with_hold_quantity)) +'"/>'
+                                        )
+                                    )
+                                .append(
+                                    purchase_button
+                                    )
                                 
-                            )        
+                                )
+                            //                            .append($('<div>').attr('class', 'seller_promises').append(
+                            //                                (item.has_warranty? $('<img class="seller_promises_icons">').attr('id', 'warranty').attr('src', '/daigou/application/assets/images/main/warranty.png') : '')
+                            //                                ).append(
+                            //                                (item.has_invoice? $('<img class="seller_promises_icons">').attr('id', 'invoice').attr('src', '/daigou/application/assets/images/main/invoice.png') : '')
+                            //                                ).append(
+                            //                                (item.sell_promise? $('<img class="seller_promises_icons">').attr('id', 'sell_promise').attr('src', '/daigou/application/assets/images/main/return.png') : '')
+                            //                                )
+                            //                                
+                            //                            )        
                             )
                             
                         );
@@ -144,6 +163,53 @@ var Daigou = function() {
         };
         return {
             listenInput : inputListener
+        }
+    }();
+    
+    var controller = function() {
+        var purchase = function() {
+            $.ajax({
+                type: "POST",
+                data: {
+                    'amount': parseInt($('input#amount_input').val()),
+                    'id': window.item.num_iid,
+                    'detail_url': window.item.detail_url,
+                    'list_time': window.item.list_time,
+                    'pic_url': window.item.pic_url,
+                    'delist_time': window.item.delist_time,
+                    'orig_price': window.item.price,
+                    'has_discount': window.item.has_discount?1:0,
+                    'has_warranty': window.item.has_warranty?1:0,
+                    'has_invoice': window.item.has_invoice?1:0,
+                    'item_standing': window.item.stuff_status,
+                    'title': window.item.title,
+                    'size': window.item.item_size,
+                    'weight': window.item.item_weight,
+                    'post_fee': window.item.post_fee,
+                    'ems_fee': window.item.ems_fee,
+                    'express_fee': window.item.express_fee,
+                    'item_for_sale': window.item.approve_status == 'onsale' ? 1 : 0,
+                    'sell_promise': window.item.sell_promise?1:0,
+                    'msg' : $('textarea#msg_to_agent').val(),
+                    'csrf_token_name': $("input[name=csrf_token_name]").val()
+                },
+                datatype: 'JSON',
+                beforeSend: function(x) {
+                    if(x && x.overrideMimeType) {
+                        x.overrideMimeType("application/json;charset=UTF-8");
+                    }
+                },
+                url: "/daigou/index.php/item/purchase",
+                success: function (j) {
+                    console.log(j);
+                },
+                error: function(jqXHR, textStatus, errorThrown, exception) {
+                              
+                }
+            });
+        };
+        return {
+            purchase: purchase
         }
     }();
     

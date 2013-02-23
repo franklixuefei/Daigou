@@ -22,7 +22,6 @@ a {
     outline: 0 none;
 }
 div.header_container {
-    height: 40px;
     position: fixed;
     top: 0;
     width: 75%;
@@ -31,7 +30,7 @@ div.header_container {
 div.banner {
     background-color: skyblue;
     background-repeat: repeat-x;
-    height: 40px;
+    height: 33px;
     position: absolute;
     width: 100%;
 }

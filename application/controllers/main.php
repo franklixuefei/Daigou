@@ -43,7 +43,7 @@ class Main extends MY_Controller { // login
         $c->secretKey = "e7aa253ff09a8b81e812945a5329e960";
         $c->format = 'json';
         $req = new ItemGetRequest;
-        $req->setFields("num_iid, with_hold_quantity, item_size, item_weight, sell_promise, detail_url,title,desc,pic_url,num,list_time,delist_time,stuff_status,location,price,post_fee,express_fee,ems_fee,has_discount,has_invoice,has_warranty,approve_status");
+        $req->setFields("num_iid, with_hold_quantity, item_size, item_weight, sell_promise, detail_url,title,desc,pic_url,num,list_time,delist_time,stuff_status,price,post_fee,express_fee,ems_fee,has_discount,has_invoice,has_warranty,approve_status");
         $req->setNumIid((int)$id);
         $resp = $c->execute($req);
         echo json_encode($resp);

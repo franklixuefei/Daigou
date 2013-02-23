@@ -52,7 +52,7 @@ div.item_control {
     background-color: #E7EBF2;
     border-top: 1px solid gray;
     bottom: 0;
-    height: 40px;
+    height: 30px;
     position: fixed;
     width: 75%;
 }
@@ -132,9 +132,35 @@ div.item_pic {
 table#basic_table tr {
     vertical-align: top;
 }
+table#basic_table td:last-child {
+    width: 80%;
+}
+textarea#msg_to_agent {
+    height: 130px;
+    padding: 5px 10px;
+    width: 95%;
+}
 span.list_period {
     float: right;
     color: gray;
     margin-right: 10px;
     font-style: italic;
+}
+div.button_wrapper {
+    bottom: 10px;
+    position: absolute;
+    right: 40px;
+}
+div.sidebar_title#orders {
+    left: 50%;
+}
+div.sidebar_title {
+    position: absolute;
+    top: 0;
+    width: 50%;
+    border-bottom: 1px solid;
+    border-right: 1px solid;
+    text-align: center;
+    padding-top: 5px;
+    padding-bottom: 5px;
 }

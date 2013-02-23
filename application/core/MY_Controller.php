@@ -1,4 +1,7 @@
-<?php  if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+<?php
+
+if (!defined('BASEPATH'))
+    exit('No direct script access allowed');
 
 /*
  * To change this template, choose Tools | Templates
@@ -6,13 +9,15 @@
  */
 
 class MY_Controller extends CI_Controller {
+
     protected $current_user;
-    
+
     public function __construct() { // testing parameter : /market/1
         parent::__construct();
         $this->set_timezone();
         date_default_timezone_set("EST");
         $this->current_user = $this->current_user();
+        $this->load->helper('cookie');
     }
 
     public function set_timezone() {
@@ -22,14 +27,14 @@ class MY_Controller extends CI_Controller {
     public function getUniqueCode($length = "") {
         do {
             $code = md5(uniqid(rand(), true));
-        } while ($this->db->select()->from('users')->where('token', $code)->count_all_results());
+        } while ($this->db->select()->from('users')->where('token', $code)->count_all_results()); // make sure there are no duplicates
         if ($length != "")
             return substr($code, 0, $length);
         else
             return $code;
     }
 
-    function genTempPW($length = 8) {
+/*    function genTempPW($length = 8) {
 
         // start with a blank password
         $password = "";
@@ -69,42 +74,62 @@ class MY_Controller extends CI_Controller {
         // done!
         return $password;
     }
-
+*/
     public function current_user() {
         $user_cookie = $this->input->cookie('DAIGOU_USER_TOKEN');
-        if (!$user_cookie) {
+        $id = $this->input->cookie('DAIGOU_ID');
+        if (!$user_cookie || !$id) {
             $token = $this->getUniqueCode();
             // create user in db with newly generated token
-                // set cookie as token
+            $data["token"] = $token;
+            $this->db->insert('users', $data);
+            $id = $this->db->insert_id();
+            // set cookie as token
             $cookie = array(
                 'name' => 'USER_TOKEN',
                 'value' => "$token",
                 'expire' => '31536000'
             );
             $this->input->set_cookie($cookie);
-                // fetch the user according to this token
-            $current_user = $this->db->select('*')->from('users')->where('token', $user_cookie)->limit(1)->row();
-            return $current_user; // returns an object
+            $id_cookie = array(
+                'name' => 'ID',
+                'value' => "$id",
+                'expire' => '31536000'
+            );
+            $this->input->set_cookie($id_cookie);
+            // fetch the user according to this token
+            $current_user = $this->db->select('*')->from('users')->where('token', $user_cookie)->where('id', $id)->limit(1)->get()->row();
         } else {
-            $current_user = $this->db->select('*')->from('users')->where('token', $user_cookie)->limit(1)->get()->row();
+            $current_user = $this->db->select('*')->from('users')->where('token', $user_cookie)->where('id', $id)->limit(1)->get()->row();
             if (!$current_user) {
                 // delete DAIGOU_USER_TOKEN cookie
+                delete_cookie('DAIGOU_USER_TOKEN');
+                delete_cookie('DAIGOU_ID');
                 $token = $this->getUniqueCode();
                 // create user in db with newly generated token
+                $data["token"] = $token;
+                $this->db->insert('users', $data);
+                $id = $this->db->insert_id();               /* FIXME: better use transaction and handle error here.*/
                 // set cookie as token
                 $cookie = array(
-                'name' => 'USER_TOKEN',
-                'value' => "$token",
-                'expire' => '31536000'
+                    'name' => 'USER_TOKEN',
+                    'value' => "$token",
+                    'expire' => '31536000' // one year
                 );
                 $this->input->set_cookie($cookie);
-                // fetch the user according to this token
-            }
-            return $current_user;
+                $id_cookie = array(
+                    'name' => 'ID',
+                    'value' => "$id",
+                    'expire' => '31536000'
+                );
+                $this->input->set_cookie($id_cookie);
+                // fetch the user according to this token and id
+                $current_user = $this->db->select('*')->from('users')->where('token', $user_cookie)->where('id', $id)->limit(1)->get()->row();
+            }   
         }
+        return $current_user;
     }
 
-    
 }
 
 ?>
