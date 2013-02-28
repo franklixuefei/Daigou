@@ -4,6 +4,10 @@
     margin: 0;
     padding: 0;
 }
+
+body {
+    font-size: 15px;
+}
 .preload {
     display: none;
 }
@@ -52,4 +56,24 @@ div.body_bg {
     height: 0;
     line-height: 0;
     visibility: hidden;
+}
+div.mask {
+    background-color: white;
+    height: 100%;
+    opacity: 0.8;
+    -moz-opacity: 0.8;
+    -o-opacity: 0.8;
+    -khtml-opacity: 0.8;
+    filter: alpha(opacity=80);
+    -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=80)";
+    position: fixed;
+    width: 100%;
+    z-index: 1;
+}
+img.loading {
+    position: absolute;
+    top: 26%;
+    left: 36%;
+    width: 6%;
+    height: auto;
 }

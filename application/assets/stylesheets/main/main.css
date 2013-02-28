@@ -11,9 +11,9 @@ div.url_input {
 }
 .basic_table {
     display: inline-block;
-    margin-left: 60px;
+    margin-left: 4%;
     vertical-align: top;
-    width: 50%;
+    width: 60%;
 }
 input#url_input {
     font-size: 20px;
@@ -55,6 +55,7 @@ div.item_control {
     height: 30px;
     position: fixed;
     width: 75%;
+    z-index: 1;
 }
 div.vertical_drag_bar {
     cursor: col-resize;
@@ -80,7 +81,7 @@ div.main_block {
 }
 img#item_pic {
     height: auto;
-    max-width: 400px;
+    max-width: 35%;
     -moz-box-shadow: 0 0 3px #676869;
     -khtml-box-shadow: 0 0 3px #676869;
     -webkit-box-shadow: 0 0 3px #676869;
@@ -93,7 +94,7 @@ img#item_pic {
     background-clip: padding-box;
 }
 div.item_pic {
-    display: inline-block;
+    display: inline;
     vertical-align: top;
 }
 .block_header {
@@ -107,7 +108,7 @@ div.item_pic {
     background-clip: padding-box;
     border: 1px solid transparent;
     border-radius: 0 0 0 5px;
-    padding: 10px 10px 6px;
+    padding: 10px 10px 10px;
     position: relative;
 }
 .block_header_icon {
@@ -129,6 +130,9 @@ div.item_pic {
     line-height: 1.5;
     margin-left: 5px;
 }
+table#basic_table {
+    width: 100%;
+}
 table#basic_table tr {
     vertical-align: top;
 }
@@ -136,9 +140,9 @@ table#basic_table td:last-child {
     width: 80%;
 }
 textarea#msg_to_agent {
-    height: 130px;
+    height: 120px;
     padding: 5px 10px;
-    width: 95%;
+    width: 90%;
 }
 span.list_period {
     float: right;
@@ -155,12 +159,115 @@ div.sidebar_title#orders {
     left: 50%;
 }
 div.sidebar_title {
+    border-bottom: 1px dashed white;
     position: absolute;
     top: 0;
     width: 50%;
-    border-bottom: 1px solid;
-    border-right: 1px solid;
+    border-bottom: 1px solid #EFEFEF;
+    border-right: 1px dashed white;
     text-align: center;
-    padding-top: 5px;
-    padding-bottom: 5px;
+    padding-top: 6px;
+    padding-bottom: 6px;
+    z-index: 1;
+    background-color:pink;
+}
+div.sidebar_title#cart {
+    z-index: 2;
+}
+div.cart_entry {
+    background-color: #FFEFFF;
+    border-bottom: 1px solid #BFBFBF;
+    padding: 10px;
+    position: relative;
+}
+div.cart_entry:hover {
+    cursor:pointer;
+}
+div#shopping_cart_list_body {
+    height: 85%;
+    overflow: auto;
+    position: absolute;
+    top: 0;
+    width: 100%;
+}
+div.thumb_pic_container img {
+    margin-right: 10px;
+    max-height: 80px;
+    max-width: 80px;
+    -moz-box-shadow: 0 0 3px #676869;
+    -khtml-box-shadow: 0 0 3px #676869;
+    -webkit-box-shadow: 0 0 3px #676869;
+    box-shadow: 0 0 3px #676869;
+    -moz-border-radius: 3px;
+    -webkit-border-radius: 3px;
+    border-radius: 3px;
+    -moz-background-clip: padding-box;
+    -webkit-background-clip: padding-box;
+    background-clip: padding-box;
+}
+div.thumb_pic_container {
+    display: inline-block;
+    height: 82px;
+    position: relative;
+    text-align: center;
+    width: 90px;
+}
+div.cart_item_amount {
+    color: #4A4A4A;
+    display: inline-block;
+    font-size: 20px;
+    position: absolute;
+    right: 5%;
+    top: 40px;
+    vertical-align: top;
+}
+div.cart_item_amount span {
+    background-color: white;
+    padding: 4px;
+    -moz-border-radius: 17px;
+    -webkit-border-radius: 17px;
+    border-radius: 17px;
+    -moz-background-clip: padding-box;
+    -webkit-background-clip: padding-box;
+    background-clip: padding-box;
+}
+div.middle_content {
+    display: inline-block;
+    vertical-align: top;
+    width: 60%;
+}
+div.cart_item_title {
+    padding-bottom: 4px;
+}
+div.cart_item_msg {
+    font-size: 14px;
+    color: gray;
+}
+span.cart_del {
+    position: absolute;
+    top: 0px;
+    right: 18px;
+    font-size: 22px;
+    color: #ff00ff;
+}
+div#shopping_cart_control {
+    border-top: 1px dashed purple;
+    bottom: 0;
+    height: 15%;
+    position: absolute;
+    width: 100%;
+}
+
+div#button_more {
+    background-image: url("../../images/main/button_more.png");
+    height: 29px;
+    margin-left: auto;
+    margin-right: auto;
+    position: relative;
+    top: -35px;
+    width: 90px;
+
+}
+div#button_more:hover {
+    cursor: pointer;
 }

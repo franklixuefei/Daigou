@@ -16,5 +16,11 @@
     <div class="side_content">
         <div class="sidebar_title" id="cart">购物车</div>
         <div class="sidebar_title" id="orders">订单</div>
+        <div id="shopping_cart_list_body">
+            <div id="button_more"></div>
+        </div>
+        <div id="shopping_cart_control">
+            
+        </div>
     </div>
 </div>

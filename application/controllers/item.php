@@ -17,6 +17,7 @@ class Item extends MY_Controller { // login
             'amount' => $this->input->post('amount'),
             'taobao_id' => $this->input->post('id'),
             'detail_url' => $this->db->escape_str($this->input->post('detail_url')),
+            'pic_url' => $this->db->escape_str($this->input->post('pic_url')),
             'orig_price' => $this->input->post('orig_price'),
             'has_discount' => (bool)$this->input->post('has_discount'),
             'has_warranty' => (bool)$this->input->post('has_warranty'),
@@ -32,8 +33,18 @@ class Item extends MY_Controller { // login
             'sell_promise' => (bool)$this->input->post('sell_promise'),
             'msg' => $this->db->escape_str($this->input->post('msg'))
         );
-        if ($this->item_model->create_item($data)) $out->ok = true;
+        if ($ret_id = $this->item_model->create_item($data)) {
+            $out->ok = true;
+            $item = $this->item_model->get_item($ret_id);
+            $out->item = $item;
+        }
         echo json_encode($out);
+    }
+    
+    public function getList() {
+        $user_id = $this->current_user->id;
+        $itemArray = $this->item_model->getList($user_id);
+        echo json_encode($itemArray);
     }
 
 }

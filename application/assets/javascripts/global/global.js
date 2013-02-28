@@ -23,3 +23,19 @@ var URIHelper = function() {
         lookupQuery: getQueryResult
     }
 }();
+
+function cutstring (string, max_length, suffix) {
+    var length = 0;
+    var ret = '';
+    var suffixFlag = false;
+    for (var i=0; i<string.length; i++) {
+        length += string.charCodeAt(i) < 0 || string.charCodeAt(i) > 255 ? 2 : 1;
+        if (length > max_length) {
+            suffixFlag = true;
+            break;
+        }
+            
+        ret += string.substr(i, 1);
+    }
+    return suffixFlag?ret+suffix:ret;
+}
