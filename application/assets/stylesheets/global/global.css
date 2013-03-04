@@ -31,7 +31,20 @@ div.header_container {
     width: 75%;
     z-index: 10;
 }
+div.admin_header_container {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 10;
+}
 div.banner {
+    background-color: skyblue;
+    background-repeat: repeat-x;
+    height: 33px;
+    position: absolute;
+    width: 100%;
+}
+div.admin_banner {
     background-color: skyblue;
     background-repeat: repeat-x;
     height: 33px;
@@ -42,6 +55,13 @@ div.main_container {
     width: 100%;
 }
 div.body_bg {
+    background-color: #FCFCFC;
+    height: 100%;
+    position: fixed;
+    width: 100%;
+    z-index: -2;
+}
+div.admin_body_bg {
     background-color: #FCFCFC;
     height: 100%;
     position: fixed;

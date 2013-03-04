@@ -40,12 +40,6 @@ class Item extends MY_Controller { // login
         }
         echo json_encode($out);
     }
-    
-    public function getList() {
-        $user_id = $this->current_user->id;
-        $itemArray = $this->item_model->getList($user_id);
-        echo json_encode($itemArray);
-    }
 
 }
 

@@ -1,74 +1,149 @@
-span#toggle_sidebar {
-    color: gray;
-    cursor: pointer;
-    float: right;
-    font-size: 16px;
-    font-weight: bold;
-    margin-right: 8px;
-    margin-top: 6px;
-}
 
-div.url_input {
-    background-color: #E7EBF2;
-    border-bottom: 1px solid gray;
-    padding-bottom: 15px;
-    padding-top: 60px;
-    position: absolute;
-    text-align: center;
-    width: 100%;
-    z-index: -1;
-}
 .basic_table {
     display: inline-block;
     margin-left: 4%;
     vertical-align: top;
     width: 60%;
 }
-input#url_input {
-    font-size: 20px;
-    height: 30px;
-    padding: 5px;
-    width: 90%;
-}
-div.side_wrapper {
-    background-color: #FAFAFA;
-    border-left: 1px solid gray;
-    height: 100%;
-    position: fixed;
-    right: 0;
-    top: 0;
-    width: 25%;
-    z-index: 11;
-    -moz-box-shadow: 0 0 3px #676869;
-    -khtml-box-shadow: 0 0 3px #676869;
-    -webkit-box-shadow: 0 0 3px #676869;
-    box-shadow: 0 0 3px #676869;
-}
-div.main_content {
+
+div.admin_content {
     background-color: #D7DBE0;
-    margin: 122px auto 0px;
-    padding-left: 8%;
-    padding-right: 8%;
-    padding-top: 1px;
-    padding-bottom: 50px;
+    margin: 64px auto 0;
+    padding: 0 8% 50px;
     z-index: 0;
 }
-div.main_wrapper {
-    width: 75%;
+div.admin_wrapper {
+    width: 100%;
 }
+
+div.admin_footer {
+    background-color: #E7EBF2;
+    border-top: 1px solid gray;
+    bottom: 0;
+    height: 30px;
+    position: fixed;
+    width: 100%;
+    z-index: 1;
+}
+
+span.num_orders {
+    float: right;
+    color: gray;
+    margin-right: 10px;
+    margin-top: 3px;
+}
+div.basic_order_info {
+    border-bottom: 1px dashed #888;
+    padding-bottom: 6px;
+}
+div.order_num, div.order_created_at, div.orig_price {
+    color: #666666;
+    display: inline-block;
+    width: 33.3%;
+    font-size: 14px;
+}
+div.order_num {
+    text-align: left;
+}
+div.orig_price {
+    text-align: right;
+}
+div.order_created_at {
+    text-align: center;
+}
+
+div.middle_content {
+    display: inline-block;
+    vertical-align: top;
+    width: 78%;
+}
+
+div.orders_item_msg {
+    border-top: 1px dashed #AAAAAA;
+    color: gray;
+    font-size: 14px;
+    height: 76px;
+    line-height: 22px;
+    overflow: auto;    
+}
+
+div.detailed_order_info {
+    border-bottom: 1px dashed #888888;
+    margin-bottom: 12px;
+    padding-bottom: 10px;
+    padding-top: 12px;
+}
+
+div.detailed_order_info:hover {
+    background-color: #FFEFFF;
+}
+div.detailed_order_info:hover {
+    cursor:pointer;
+}
+div.buyer_info_wrapper {
+    display: inline-block;
+}
+div.order_control {
+    display: inline-block;
+    float: right;
+    margin-right: 1%;
+    text-align: center;
+}
+div.order_control select {
+    text-align: center;
+    font-size: 14px;
+    margin-bottom: 14px;
+}
+div.order_control div {
+    color: #555;
+    font-size: 14px;
+    margin-bottom: 4px;
+}
+div.buyer_info table tr td:first-child {
+    text-align: right;
+}
+div.buyer_info table tr td:nth-child(2) {
+    width: 10px;
+}
+div.order_control button {
+    display: block;
+    font-size: 16px;
+    margin-left: auto;
+    margin-right: auto;
+    cursor: pointer;
+}
+div.orders_entry {
+    border-bottom: 2px solid #BFBFBF;
+    padding: 10px;
+    position: relative;
+}
+div.orders_item_title {
+    color: #444444;
+    padding-bottom: 4px;
+}
+div#inactive_orders_button_more, div#active_orders_button_more {
+    background-image: url("../../images/main/button_more.png");
+    height: 29px;
+    margin: 40px auto 30px;
+    position: relative;
+    width: 90px;
+}
+div#inactive_orders_button_more:hover, div#active_orders_button_more:hover {
+    cursor: pointer;
+}
+
+
+
+
+
+
 div.result_container {
     background-color: gray;
     height: 1000px;
     width: 100%;
 }
 div.item_control {
-    background-color: #E7EBF2;
-    border-top: 1px solid gray;
-    bottom: 0;
-    height: 30px;
-    position: fixed;
-    width: 75%;
-    z-index: 1;
+    
 }
 div.vertical_drag_bar {
     cursor: col-resize;
@@ -89,7 +164,7 @@ div.main_block {
     -webkit-background-clip: padding-box;
     background-clip: padding-box;
     margin-bottom: 20px;
-    margin-top: 20px;
+    margin-top: 50px;
     position: relative;
 }
 img#item_pic {
@@ -121,7 +196,6 @@ div.item_pic {
     background-clip: padding-box;
     border: 1px solid transparent;
     border-radius: 0 0 0 5px;
-    padding: 10px 10px 10px;
     position: relative;
 }
 .block_header_icon {
@@ -157,12 +231,7 @@ textarea#msg_to_agent {
     padding: 5px 10px;
     width: 90%;
 }
-span.list_period {
-    float: right;
-    color: gray;
-    margin-right: 10px;
-    font-style: italic;
-}
+
 div.button_wrapper {
     bottom: 10px;
     position: absolute;
@@ -201,13 +270,10 @@ div.cart_entry {
     padding: 10px;
     position: relative;
 }
-
-div.orders_entry {
-    background-color: #FFEFFF;
-    border-bottom: 1px solid #BFBFBF;
-    padding: 10px;
-    position: relative;
+div.cart_entry:hover {
+    cursor:pointer;
 }
+
 
 div#shopping_cart_list_body {
     height: 88%;
@@ -233,9 +299,8 @@ div#orders_list_body {
     box-shadow: 0 0 3px #676869;*/
 }
 div.thumb_pic_container img {
-    margin-right: 10px;
-    max-height: 80px;
-    max-width: 80px;
+    max-height: 100px;
+    max-width: 100px;
     -moz-box-shadow: 0 0 3px #676869;
     -khtml-box-shadow: 0 0 3px #676869;
     -webkit-box-shadow: 0 0 3px #676869;
@@ -249,10 +314,11 @@ div.thumb_pic_container img {
 }
 div.thumb_pic_container {
     display: inline-block;
-    height: 82px;
+    height: 100px;
     position: relative;
     text-align: center;
-    width: 90px;
+    width: 100px;
+    margin-right: 10px;
 }
 div.cart_item_amount {
     color: #4A4A4A;
@@ -273,11 +339,7 @@ div.cart_item_amount span {
     -webkit-background-clip: padding-box;
     background-clip: padding-box;
 }
-div.middle_content {
-    display: inline-block;
-    vertical-align: top;
-    width: 60%;
-}
+
 div.cart_item_title {
     padding-bottom: 4px;
 }
@@ -291,20 +353,17 @@ span.cart_del {
     right: 18px;
     font-size: 22px;
     color: #ff00ff;
-    cursor: pointer;
 }
 
 div.orders_item_amount {
     color: #4A4A4A;
-    display: inline-block;
+    float: right;
     font-size: 20px;
-    position: absolute;
-    right: 5%;
-    top: 40px;
-    vertical-align: top;
+    margin-right: 3%;
+    margin-top: 30px;
 }
 div.orders_item_amount span {
-    background-color: white;
+    background-color: skyblue;
     padding: 4px;
     -moz-border-radius: 17px;
     -webkit-border-radius: 17px;
@@ -313,63 +372,16 @@ div.orders_item_amount span {
     -webkit-background-clip: padding-box;
     background-clip: padding-box;
 }
-div.middle_content {
-    display: inline-block;
-    vertical-align: top;
-    width: 60%;
-}
-div.orders_item_title {
-    padding-bottom: 4px;
-}
-div.orders_item_msg {
-    font-size: 14px;
-    color: gray;
-}
+
+
 span.orders_del {
     position: absolute;
     top: 0px;
     right: 18px;
     font-size: 22px;
     color: #ff00ff;
-    cursor: pointer;
-}
-div.order_header {
-    margin-bottom: 24px;
 }
 
-div.order_num, div.order_created_at {
-    color: gray;
-    display: inline-block;
-    font-size: 13px;
-}
-
-div.order_num {
-    float:left;
-}
-
-div.order_created_at {
-    float: right;
-    margin-right: 10%;
-}
-
-div.order_status {
-    height: 18px;
-    margin-top: 3px;
-}
-
-div.order_status_text, div.order_updated_at {
-    color: gray;
-    display: inline-block;
-    font-size: 13px;
-}
-div.order_status_text {
-    float:left;
-}
-
-div.order_updated_at {
-    float: right;
-    margin-right: 10%;
-}
 div#shopping_cart_control {
     bottom: 0;
     height: 12%;
@@ -382,16 +394,7 @@ div#shopping_cart_control {
     background-color: #EFFFFF;
 }
 
-div#button_more, div#orders_button_more {
-    background-image: url("../../images/main/button_more.png");
-    height: 29px;
-    margin: 40px auto 30px;
-    position: relative;
-    width: 90px;
-}
-div#button_more:hover, div#orders_button_more:hover {
-    cursor: pointer;
-}
+
 div.continue {
     height: 100%;
 }

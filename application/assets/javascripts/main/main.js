@@ -15,6 +15,8 @@ var Daigou = function() {
         taobaoURL.listenInput();
         sidebarResizable.init();
         shoppingCart.init();
+        orders.init();
+        controller.init();
     };
     
     var page = function() {
@@ -77,20 +79,20 @@ var Daigou = function() {
                             timeout: 100000,
                             success: function (j) {
                                 //if (j.item.num_iid == parseInt(URIHelper.lookupQuery(input.val(), 'id'))) { // only show corresponding info
-                                    window.item = j.item;
-                                    $('div.main_content').text('');
-                                    $('div.main_content').children().remove();
-                                    showResult(j);
-                                    $('div.mask').remove();
-                                    sidebarResizable.reinit();
-                                //}
+                                window.item = j.item;
+                                $('div.main_content').text('');
+                                $('div.main_content').children().remove();
+                                showResult(j);
+                                $('div.mask').remove();
+                                sidebarResizable.reinit();
+                            //}
                             },
                             error: function(jqXHR, textStatus, errorThrown, exception) {
                                 if (textStatus == 'error' && errorThrown == 'Unauthorized') { // CSRF token expired
                                     location.reload();
                                 } else { // mostly timed out.
                                     if (textStatus == "abort" && errorThrown == "abort") {
-                                        // do nothing
+                                    // do nothing
                                     } else if (textStatus == 'timeout' && errorThrown == 'timeout') {
                                         prev_id = null; // reset prev_id so that user could try all possible urls out.
                                         showResult(-2);
@@ -151,7 +153,7 @@ var Daigou = function() {
                                     '<tr><td>促销</td><td>'+ (item.has_discount? '正在促销<a target="_blank" href="'+ item.detail_url +'">查看促销价</a>' : '无促销活动') +'</td></tr>'+
                                     //'<tr><td>商品所在地</td><td>'+ (item.location) +'</td></tr>'+
                                     '<tr><td>配送</td><td>'+ (item.post_fee? '平邮：'+item.post_fee+' 元<br/>' : '') + (item.express_fee? '快递：'+ item.express_fee +' 元<br/>' : '') + (item.ems_fee? 'EMS：'+ item.ems_fee +' 元</td>' : '') + '</tr>'+
-                                    '<tr><td>给代购商留言</td><td><textarea id="msg_to_agent" placeholder="请注明商品促销价，以及其他商品具体信息。例如：尺码、颜色、型号等等"></textarea></td>' 
+                                    '<tr><td>给代购商留言</td><td><textarea id="msg_to_agent" placeholder="请注明商品促销价，以及其他商品具体信息。例如：尺码、颜色、型号、重量等等"></textarea></td>' 
                                     )
                                 )
                             .append(
@@ -201,7 +203,223 @@ var Daigou = function() {
     }();
     
     var controller = function() {
+        var nameChanged = false;
+        var addrChanged = false;
+        var emailChanged = false;
+        var phoneChanged = false;
+        var initialize = function() {
+            $('div.sidebar_title#cart').bind('click', function() {
+                switchToCart();
+            });
+            $('div.sidebar_title#orders').bind('click', function() {
+                switchToOrders();
+            });
+            $('div.continue').find('span').bind('mousedown', function() {
+                $(this).addClass('active'); 
+            }).bind('mouseup', function() {
+                $(this).removeClass('active');
+            // ajax here
+            });
+            $('span#place_order').bind('click', showDetailInfo);
+            $('span#back').bind('click', backToCart);
+            $('span#confirm').bind('click', itemsConfirm);
+            $('input#name').change(function() {
+                nameChanged = true;
+            });
+            $('input#address').change(function() {
+                addrChanged = true;
+            });
+            $('input#email').change(function() {
+                emailChanged = true;
+            });
+            $('input#phone').change(function() {
+                phoneChanged = true;
+            });
+        };
+        
+        var switchToCart = function() {
+            $('div#shopping_cart_list_body').show();
+            $('div#orders_list_body').hide();
+            $('div#shopping_cart_control').show();
+            $('div.sidebar_title').removeClass('active');
+            $('div.sidebar_title#cart').addClass('active');
+        };
+        
+        var switchToOrders = function() {
+            $('div#orders_list_body').show();
+            $('div#shopping_cart_list_body').hide();
+            $('div#shopping_cart_control').hide();
+            $('div.sidebar_title').removeClass('active');
+            $('div.sidebar_title#orders').addClass('active');
+        };
+        
+        var showDetailInfo = function() {
+            $(this).fadeOut(100);
+            $('div#detail_info').fadeIn(200);
+            $('div#shopping_cart_control').animate({
+                height: "40%"
+            }, 300, function() {
+                $('div#detail_info').css('overflow','auto');
+            });
+            $('div#shopping_cart_list_body').animate({
+                height: "60%"
+            }, 300);
+        };
+        
+        var hideDetailInfo = function() {
+            $('div#shopping_cart_control').animate({
+                height: "12%"
+            }, 300, function() {
+                $('div#detail_info').css('overflow','');
+            });
+            $('div#shopping_cart_list_body').animate({
+                height: "88%"
+            }, 300);
+        };
+        
+        var backToCart = function() {
+            $('div#detail_info').fadeOut(100);
+            $('span#place_order').fadeIn(200);
+            hideDetailInfo();
+        };
+        
+        var itemsConfirm = function() {
+            // some animation here
+            var data = {
+                'csrf_token_name': $("input[name=csrf_token_name]").val()
+            };
+            if (nameChanged) {
+                data['name'] = $('input#name').val();
+            }
+            if (addrChanged) {
+                data['address'] = $('input#address').val();                
+            }
+            if (emailChanged) {
+                data['email'] = $('input#email').val();
+            }
+            if (phoneChanged) {
+                data['phone'] = $('input#phone').val();
+            }
+            $.ajax({ // check cart count and then submit order.
+                type: "POST",
+                data: data,
+                datatype: 'JSON',
+                beforeSend: function(x) {
+                    if(x && x.overrideMimeType) {
+                        x.overrideMimeType("application/json;charset=UTF-8");
+                    }
+                //console.log(data);
+                },
+                url: "/daigou/index.php/cart/place_order",
+                success: function (j) {
+                    if (j.ok) { // return error here indicating nothing is in cart yet.
+                        if (j.cartEmpty) {
+                            alert('购物车为空'); // FIXME change to notice bar
+                        } else { // order has been submitted
+                            // reset flags
+                            nameChanged = false;
+                            addrChanged = false;
+                            emailChanged = false;
+                            phoneChanged = false;
+                            // remove items in cart and show notice bar success.
+                            $('div.cart_entry').fadeOut(200, function() {
+                                $(this).remove();
+                            });
+                            backToCart();
+                            // trigger the orders to reload
+                            orders.reload();
+                        }
+                    } else {
+                        alert('系统错误，请刷新重试');
+                    }
+                    
+                },
+                error: function(jqXHR, textStatus, errorThrown, exception) {
+                    if (textStatus == 'error' && errorThrown == 'Unauthorized') { // CSRF token expired
+                        location.reload();
+                    } else { // mostly timed out.
+                                    
+                    }
+                                
+                }
+            });
+        };
+        
+        var deleteCartItem = function(item_id, itemObj) {
+            $.ajax({ // check cart count and then submit order.
+                type: "POST",
+                data: {
+                    'csrf_token_name': $("input[name=csrf_token_name]").val(),
+                    'id': item_id
+                    
+                },
+                datatype: 'JSON',
+                beforeSend: function(x) {
+                    if(x && x.overrideMimeType) {
+                        x.overrideMimeType("application/json;charset=UTF-8");
+                    }
+                //console.log(data);
+                },
+                url: "/daigou/index.php/cart/delete_cart_item",
+                success: function (j) {
+                    if (j.ok) {
+                        itemObj.fadeOut(200, function() {
+                            $(this).remove();
+                            $('div.cart_entry:first').css('margin-top','33px');
+                        });
+                    } else {
+                        alert('删除错误，请刷新重试');
+                    }  
+                },
+                error: function(jqXHR, textStatus, errorThrown, exception) {
+                    if (textStatus == 'error' && errorThrown == 'Unauthorized') { // CSRF token expired
+                        location.reload();
+                    } else { // mostly timed out.
+                        
+                    }
+                                
+                }
+            });
+        };
+        var deleteOrdersItem = function(item_id, itemObj) {
+            $.ajax({ // check cart count and then submit order.
+                type: "POST",
+                data: {
+                    'csrf_token_name': $("input[name=csrf_token_name]").val(),
+                    'id': item_id
+                    
+                },
+                datatype: 'JSON',
+                beforeSend: function(x) {
+                    if(x && x.overrideMimeType) {
+                        x.overrideMimeType("application/json;charset=UTF-8");
+                    }
+                //console.log(data);
+                },
+                url: "/daigou/index.php/order/delete_orders_item",
+                success: function (j) {
+                    if (j.ok) {
+                        itemObj.fadeOut(200, function() {
+                            $(this).remove();
+                            $('div.orders_entry:first').css('margin-top','33px');
+                        });
+                    } else {
+                        alert('删除错误，请刷新重试');
+                    }  
+                },
+                error: function(jqXHR, textStatus, errorThrown, exception) {
+                    if (textStatus == 'error' && errorThrown == 'Unauthorized') { // CSRF token expired
+                        location.reload();
+                    } else { // mostly timed out.
+                        
+                    }
+                                
+                }
+            });
+        };
+        
         var purchase = function() {
+            // some animation here TODO
             $.ajax({
                 type: "POST",
                 data: {
@@ -235,6 +453,9 @@ var Daigou = function() {
                 },
                 url: "/daigou/index.php/item/purchase",
                 success: function (j) {
+                    $('input#amount_input').val('');
+                    $('textarea#msg_to_agent').val('');
+                    // TODO add notice bar
                     shoppingCart.prepend(j.item);
                 },
                 error: function(jqXHR, textStatus, errorThrown, exception) {
@@ -247,7 +468,10 @@ var Daigou = function() {
             });
         };
         return {
-            purchase: purchase
+            init: initialize,
+            purchase: purchase,
+            deleteCartItem: deleteCartItem,
+            deleteOrdersItem: deleteOrdersItem
         }
     }();
     
@@ -257,24 +481,26 @@ var Daigou = function() {
         var MAX_INDEX = 200;
         var initialize = function() {
             $('div#button_more').bind('click', function() {
-                $('div.cart_entry:last').css('margin-bottom', '')
+                $('div.cart_entry:last').css('margin-bottom', '');
                 generateList(list);
             });
             getList();
         };
         
         var generateEntry = function(item) {
-            var entry = $('<div>').attr('class', 'cart_entry').attr('id', item.id);
-            entry.append($('<div>').attr('class','thumb_pic_container').append($('<img>').attr('src', item.pic_url)))
-                .append($('<div>').attr('class','middle_content')
-                            .append($('<div>').attr('class', 'cart_item_title').text(item.msg?cutstring(item.title, 28, '...'):cutstring(item.title, 75, '...')))
-                            .append($('<div>').attr('class', 'cart_item_msg').text(cutstring(item.msg, 90, '...')))
-                       )
-                .append($('<div>').attr('class','cart_item_amount').append($('<span>').text('×'+item.amount)));
+            var entry = $('<div>').attr('class', 'cart_entry');
+            entry.append($('<div>').attr('class','thumb_pic_container').append($('<a>').attr('href', item.detail_url).attr('target', '_blank').append($('<img>').attr('src', item.pic_url))))
+            .append($('<div>').attr('class','middle_content')
+                .append($('<div>').attr('class', 'cart_item_title').text(item.msg?cutstring(item.title, 28, '...'):cutstring(item.title, 75, '...')))
+                .append($('<div>').attr('class', 'cart_item_msg').text(cutstring(item.msg, 90, '...')))
+                )
+            .append($('<div>').attr('class','cart_item_amount').append($('<span>').text('×'+item.amount)));
             entry.bind('mouseenter', function() {
                 $(this).prepend($('<span>').attr('class', 'cart_del').text('×')
                     .bind('click', function() {
-                        alert('working');
+                        //alert('working');
+                        if (confirm("确定从购物车删除 "+ item.title + " ?"))
+                            controller.deleteCartItem(item.id, entry);
                     }));
             }).bind('mouseleave', function() {
                 $(this).find('.cart_del').unbind('click').remove();
@@ -284,15 +510,17 @@ var Daigou = function() {
         
         var generateList = function(list) {
             var i = index;
-            for (;i < index + 2 && list.hasOwnProperty(i);++i) {
-                var entry = generateEntry(list[i]);
+            var entry;
+            for (;i < index + 10 && list.hasOwnProperty(i);++i) {
+                entry = generateEntry(list[i]);
                 if (i == 0) {
                     entry.css('margin-top', '33px');
                 }
                 $("div#shopping_cart_list_body").append(entry);
+                $('div.orders_entry:first').css('margin-top', '33px');
             }
             index = i;
-            entry.css('margin-bottom', '60px');
+            //if (entry) entry.css('margin-bottom', '60px');
             $("#button_more").appendTo("div#shopping_cart_list_body").show();
             if (!list.hasOwnProperty(index) || index >= MAX_INDEX) {
                 $("#button_more").css('cursor','default')
@@ -316,7 +544,7 @@ var Daigou = function() {
                         x.overrideMimeType("application/json;charset=UTF-8");
                     }
                 },
-                url: "/daigou/index.php/item/getList",
+                url: "/daigou/index.php/cart/getList",
                 success: function (j) {
                     //console.log(j);
                     list = j;
@@ -330,24 +558,192 @@ var Daigou = function() {
                     }
                 }
             });
-        }
+        };
         
         var prependItem = function(item) {
-            
+            var entry = generateEntry(item);
+            $('div.cart_entry').css('margin-top','');
+            entry.css('margin-top', '33px').hide();
+            $("div#shopping_cart_list_body").prepend(entry);
+            entry.fadeIn();
+        };
+        var reload = function() {
+            $('div.cart_entry').remove();
+            index = 0;
+            list = null;
+            getList();
         };
         return {
             init: initialize,
-            prepend: prependItem
+            prepend: prependItem,
+            reload: reload
+        }
+    }();
+    
+    var orders = function() {
+        var index = 0;
+        var list = null;
+        var MAX_INDEX = 300;
+        var initialize = function() {
+            $('div#orders_button_more').bind('click', function() {
+                $('div.orders_entry:last').css('margin-bottom', '');
+                generateList(list);
+            });
+            getList();
+        };
+        
+        var generateEntry = function(item) {
+            var entry = $('<div>').attr('class', 'orders_entry');
+            var order_header = $('<div>').attr('class', 'order_header');
+            var order_content = $('<div>').attr('class', 'orders_content');
+            var order_status = $('<div>').attr('class', 'order_status');
+            
+            order_header.append($('<div>').attr('class', 'order_num').text('#'+item.track_num))
+                .append($('<div>').attr('class', 'order_created_at').text(item.created_at));
+            
+            order_content.append($('<div>').attr('class','thumb_pic_container').append($('<a>').attr('href', item.detail_url).attr('target', '_blank').append($('<img>').attr('src', item.pic_url))))
+            .append($('<div>').attr('class','middle_content')
+                .append($('<div>').attr('class', 'orders_item_title').text(item.msg?cutstring(item.title, 28, '...'):cutstring(item.title, 75, '...')))
+                .append($('<div>').attr('class', 'orders_item_msg').text(cutstring(item.msg, 90, '...')))
+                )
+            .append($('<div>').attr('class','orders_item_amount').append($('<span>').text('×'+item.amount)));
+            if (parseInt(item.status) == 0) {
+                entry.bind('mouseenter', function() {
+                    $(this).prepend($('<span>').attr('class', 'orders_del').text('×')
+                        .bind('click', function() {
+                            //alert('working');
+                            if (confirm("确定删除订单 "+ item.title + " ?"))
+                                controller.deleteOrdersItem(item.id, entry);
+                        }));
+                }).bind('mouseleave', function() {
+                    $(this).find('.orders_del').unbind('click').remove();
+                });
+            }
+            var status_text = '';
+            switch(parseInt(item.status)) {
+                case 0:
+                    status_text = '<span style="color: gray">未处理</span>';
+                    break;
+                case 1:
+                    status_text = '<span style="color: red">已确认，正在配货</span>';
+                    break;
+                case 2:
+                    status_text = '<span style="color: red">已发货</span>';
+                    break;
+                case 3:
+                    status_text = '<span style="color: green">已成交 &#10003;</span>';
+                    break;
+                case 4:
+                    status_text = '<span style="color: gray">已关闭</span>';
+                    break;
+                default:
+                    break;
+            }
+            order_status.append($('<div>').attr('class', 'order_status_text').html(status_text))
+                .append($('<div>').attr('class', 'order_updated_at').text(item.updated_at));
+            
+            order_header.appendTo(entry);
+            order_content.appendTo(entry);
+            order_status.appendTo(entry);
+            return entry;
+        };
+        
+        var generateList = function(list) {
+            var i = index;
+            var entry;
+            for (;i < index + 10 && list.hasOwnProperty(i);++i) {
+                entry = generateEntry(list[i]);
+                if (i == 0) {
+                    entry.css('margin-top', '33px');
+                }
+                $("div#orders_list_body").append(entry);
+                $('div.orders_entry:first').css('margin-top', '33px');
+            }
+            index = i;
+            //if (entry) entry.css('margin-bottom', '60px');
+            $("#orders_button_more").appendTo("div#orders_list_body").show();
+            if (!list.hasOwnProperty(index) || index >= MAX_INDEX) {
+                $("#orders_button_more").css('cursor','default')
+                .css("background-image", "url('application/assets/images/main/button_nomore.png')");
+            } else {
+                $("#orders_button_more").css('cursor','')
+                .css("background-image", "");
+            }
+        };
+        
+        var getList = function() {
+            $("#orders_button_more").hide();
+            $.ajax({
+                type: "POST",
+                data: {
+                    'csrf_token_name': $("input[name=csrf_token_name]").val()
+                },
+                datatype: 'JSON',
+                beforeSend: function(x) {
+                    if(x && x.overrideMimeType) {
+                        x.overrideMimeType("application/json;charset=UTF-8");
+                    }
+                },
+                url: "/daigou/index.php/order/getList",
+                success: function (j) {
+                    //console.log(j);
+                    list = j;
+                    generateList(j);
+                },
+                error: function(jqXHR, textStatus, errorThrown, exception) {
+                    if (textStatus == 'error' && errorThrown == 'Unauthorized') { // CSRF token expired
+                        location.reload();
+                    } else {
+                        
+                    }
+                }
+            });
+        };
+        
+        var reload = function() {
+            $('div.orders_entry').remove();
+            index = 0;
+            list = null;
+            getList();
+        };
+        return {
+            init: initialize,
+            reload: reload
         }
     }();
     
     var sidebarResizable = function() {
+        var toggle = 1;
         var initialize = function() {
             leftWindowOrigWidth = $('div.main_wrapper').width();
             //rightWindowOrigWidth = $('div.vertical_drag_bar').parent().width();
             resizeWidth();
             resizeHeight();
+            $('span#toggle_sidebar').bind('click', function() {
+                toggle_sidebar();
+            });
         };
+        
+        var toggle_sidebar = function() {
+            if (toggle == 0) {
+                // show sidebar
+                $('div.side_wrapper').show();
+                $('div.item_control').css('width', '75%');
+                $('div.main_wrapper').css('width', '75%');
+                $('div.header_container').css('width', '75%');
+                $('span#toggle_sidebar').html('&rarr;');
+                toggle = 1;
+            } else {
+                // hide sidebar
+                $('div.side_wrapper').hide();
+                $('div.item_control').css('width', '100%');
+                $('div.main_wrapper').css('width', '100%');
+                $('div.header_container').css('width', '100%');
+                $('span#toggle_sidebar').html('&larr;');
+                toggle = 0;
+            }
+        };
+        
         var reinitialize = function() {
             $(document).unbind('mousemove'); // unbind mousemove
             $('div.vertical_drag_bar').unbind('mousedown');
