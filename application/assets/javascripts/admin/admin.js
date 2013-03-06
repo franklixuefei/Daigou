@@ -131,7 +131,7 @@ var admin = function() {
             i_index = i;
             //if (entry) entry.css('margin-bottom', '60px');
             $("#inactive_orders_button_more").appendTo("div#inactive_orders_list_body").show();
-            if (!list.hasOwnProperty(index) || index >= MAX_INDEX) {
+            if (!list.hasOwnProperty(i_index) || i_index >= MAX_INDEX) {
                 $("#inactive_orders_button_more").css('cursor','default')
                 .css("background-image", "url('../application/assets/images/main/button_nomore.png')");
             } else {

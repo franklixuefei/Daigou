@@ -4,15 +4,28 @@
     var item = null;
 </script>
 <div class="main_wrapper">
-    <div class="main_content">
+    <img src="application/assets/images/global/diggos_cloud.png" id="cloud" />
+    <div class="main_content_wrapper">
+        <div id="welcome_text"></div>
+        <div class="url_input_wrapper block_wrapper">
+            <div id="input_tag">请把商品网址复制到这里～</div>
+            <div class="url_input block">
+                <input type="text" id="url_input" />
+            </div>
+        </div>
+        <div class="main_content">
 
+        </div>
     </div>
-    <div class="item_control"> 
-        <span id="toggle_sidebar">&rarr;</span>
-    </div>
+    <div class="footer"> </div>
+
 </div>
 <div class="side_wrapper">
-    <div class="vertical_drag_bar"></div>
+    <div class="vertical_drag_bar">
+        <span id="toggle_sidebar">
+            <span id="toggle_arrow"></span>
+        </span>
+    </div>
     <div class="side_content">
         <div class="sidebar_title active" id="cart">购物车</div>
         <div class="sidebar_title" id="orders">订单</div>
@@ -49,8 +62,10 @@
                             </tr>
                         </tbody>
                     </table>
-                    <span id="confirm" class="sidebar_buttons">确认</span>
-                    <span id="back" class="sidebar_buttons">返回</span>
+                    <div class="sidebar_buttons_wrapper">
+                        <span id="confirm" class="sidebar_buttons">确认</span>
+                        <span id="back" class="sidebar_buttons">返回</span>
+                    </div>
                 </div>
             </div>
         </div>

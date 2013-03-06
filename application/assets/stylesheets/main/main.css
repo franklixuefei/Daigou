@@ -1,41 +1,105 @@
 span#toggle_sidebar {
-    color: gray;
+    background-image: url("../../images/global/sidebar_toggle.png");
+    height: 121px;
+    left: -20px;
+    margin-top: -60px;
+    position: absolute;
+    top: 50%;
+    width: 31px;
+}
+span#toggle_sidebar {
     cursor: pointer;
-    float: right;
-    font-size: 16px;
-    font-weight: bold;
-    margin-right: 8px;
-    margin-top: 6px;
+}
+span#toggle_arrow {
+    background-image: url("../../images/global/left_arrow.png");
+    height: 27px;
+    left: 7px;
+    margin-top: -10px;
+    position: absolute;
+    top: 50%;
+    width: 14px;
+    z-index: 2;
+}
+img#cloud {
+    position: absolute;
+    right: 8.5%;
+    top: 100px;
+}
+div#input_tag {
+    background-image: url("../../images/global/diggos_tag.png");
+    color: white;
+    font-size: 22px;
+    height: 58px;
+    left: 20px;
+    padding-top: 10px;
+    position: absolute;
+    top: -30px;
+    width: 285px;
+}
+div#welcome_text {
+    background-image: url("../../images/global/diggos_welcome_text.png");
+    height: 50px;
+    left: 50%;
+    margin-left: -299px;
+    position: absolute;
+    top: -110px;
+    width: 598px;
+}
+div.block {
+    border: 1px solid #c1c1c1;
+    border-radius: 5px 5px 5px 5px;
+    padding: 32px;
+    background-color: #fefefe;
 }
 
-div.url_input {
-    background-color: #E7EBF2;
-    border-bottom: 1px solid gray;
-    padding-bottom: 15px;
-    padding-top: 60px;
-    position: absolute;
+div.block_wrapper {
+    background-color: #EFEFEF;
+    border-radius: 5px 5px 5px 5px;
+    padding: 6px;
+    position: relative;
     text-align: center;
-    width: 100%;
-    z-index: -1;
+    -moz-box-shadow: 4px 4px 3px #2E78AB;
+    -khtml-box-shadow: 4px 4px 3px #2E78AB;
+    -webkit-box-shadow: 4px 4px 3px #2E78AB;
+    box-shadow: 4px 4px 3px #2E78AB;
 }
+div.main_content_wrapper {
+    margin-left: auto;
+    margin-right: auto;
+    position: relative;
+    top: 32%;
+    width: 660px;
+    z-index: 2;
+}
+
 .basic_table {
     display: inline-block;
     margin-left: 4%;
     vertical-align: top;
-    width: 60%;
+    width: 56%;
+}
+div#purchase {
+    background-image: url("../../images/global/diggos_conf.png");
+    height: 49px;
+    width: 111px;
+}
+div#purchase:hover {
+    background-position: right;
+    cursor: pointer;
 }
 input#url_input {
     font-size: 20px;
     height: 30px;
     padding: 5px;
     width: 90%;
+    border: 1px solid #aeaeae;
 }
 div.side_wrapper {
     background-color: #FAFAFA;
     border-left: 1px solid gray;
     height: 100%;
     position: fixed;
-    right: 0;
+    right: -25%;
     top: 0;
     width: 25%;
     z-index: 11;
@@ -43,58 +107,44 @@ div.side_wrapper {
     -khtml-box-shadow: 0 0 3px #676869;
     -webkit-box-shadow: 0 0 3px #676869;
     box-shadow: 0 0 3px #676869;
+    z-index: 2;
 }
 div.main_content {
-    background-color: #D7DBE0;
-    margin: 122px auto 0px;
-    padding-left: 8%;
-    padding-right: 8%;
-    padding-top: 1px;
-    padding-bottom: 50px;
-    z-index: 0;
+    margin: 30px auto 0;
 }
 div.main_wrapper {
-    width: 75%;
+    overflow: auto;
+    width: 100%;
+    background-image: url("/daigou/application/assets/images/global/diggos_bg.png"); 
+    height: 100%;
+    position: fixed;
+    background-size: 100% 100%;
+    top: 0;
+    z-index: 1;
 }
 div.result_container {
     background-color: gray;
     height: 1000px;
     width: 100%;
 }
-div.item_control {
-    background-color: #E7EBF2;
-    border-top: 1px solid gray;
-    bottom: 0;
-    height: 30px;
-    position: fixed;
-    width: 75%;
-    z-index: 1;
-}
+
 div.vertical_drag_bar {
-    cursor: col-resize;
+    background-image: url("../../images/global/vertical_bar.png");
+    background-repeat: repeat-y;
     height: 100%;
-    margin-left: -4px;
-    width: 7px;
+    margin-left: -11px;
+    position: absolute;
+    width: 11px;
+    z-index: 2;
 }
 div.main_block {
-    background: white;
-    -moz-box-shadow: 0 0 3px #676869;
-    -khtml-box-shadow: 0 0 3px #676869;
-    -webkit-box-shadow: 0 0 3px #676869;
-    box-shadow: 0 0 3px #676869;
-    -moz-border-radius: 5px;
-    -webkit-border-radius: 5px;
-    border-radius: 5px;
-    -moz-background-clip: padding-box;
-    -webkit-background-clip: padding-box;
-    background-clip: padding-box;
-    margin-bottom: 20px;
-    margin-top: 20px;
+    padding: 20px !important;
     position: relative;
+    text-align: left;
 }
 img#item_pic {
     height: auto;
-    max-width: 35%;
+    max-width: 38%;
     -moz-box-shadow: 0 0 3px #676869;
     -khtml-box-shadow: 0 0 3px #676869;
     -webkit-box-shadow: 0 0 3px #676869;
@@ -144,6 +194,8 @@ div.item_pic {
     margin-left: 5px;
 }
 table#basic_table {
+    font-size: 14px;
+    margin-top: 8px;
     width: 100%;
 }
 table#basic_table tr {
@@ -153,9 +205,11 @@ table#basic_table td:last-child {
     width: 80%;
 }
 textarea#msg_to_agent {
-    height: 120px;
+    font-size: 14px;
+    resize: vertical;
+    height: 100px;
     padding: 5px 10px;
-    width: 90%;
+    width: 92%;
 }
 span.list_period {
     float: right;
@@ -164,9 +218,12 @@ span.list_period {
     font-style: italic;
 }
 div.button_wrapper {
-    bottom: 10px;
-    position: absolute;
-    right: 40px;
+    float: right;
+    margin-top: 14px;
+}
+div.side_content {
+    height: 100%;
+    width: 100%;
 }
 div.sidebar_title#orders {
     left: 50%;
@@ -205,7 +262,7 @@ div.cart_entry {
 div.orders_entry {
     background-color: #FFEFFF;
     border-bottom: 1px solid #BFBFBF;
-    padding: 10px;
+    padding: 5px 10px;
     position: relative;
 }
 
@@ -233,7 +290,6 @@ div#orders_list_body {
     box-shadow: 0 0 3px #676869;*/
 }
 div.thumb_pic_container img {
-    margin-right: 10px;
     max-height: 80px;
     max-width: 80px;
     -moz-box-shadow: 0 0 3px #676869;
@@ -249,10 +305,11 @@ div.thumb_pic_container img {
 }
 div.thumb_pic_container {
     display: inline-block;
-    height: 82px;
+    height: 80px;
+    margin-right: 10px;
     position: relative;
     text-align: center;
-    width: 90px;
+    width: 80px;
 }
 div.cart_item_amount {
     color: #4A4A4A;
@@ -280,10 +337,11 @@ div.middle_content {
 }
 div.cart_item_title {
     padding-bottom: 4px;
+    font-size: 14px;
 }
 div.cart_item_msg {
-    font-size: 14px;
     color: gray;
+    font-size: 13px;
 }
 span.cart_del {
     position: absolute;
@@ -319,11 +377,12 @@ div.middle_content {
     width: 60%;
 }
 div.orders_item_title {
+    font-size: 14px;
     padding-bottom: 4px;
 }
 div.orders_item_msg {
-    font-size: 14px;
     color: gray;
+    font-size: 13px;
 }
 span.orders_del {
     position: absolute;
@@ -340,7 +399,7 @@ div.order_header {
 div.order_num, div.order_created_at {
     color: gray;
     display: inline-block;
-    font-size: 13px;
+    font-size: 12px;
 }
 
 div.order_num {
@@ -360,7 +419,7 @@ div.order_status {
 div.order_status_text, div.order_updated_at {
     color: gray;
     display: inline-block;
-    font-size: 13px;
+    font-size: 12px;
 }
 div.order_status_text {
     float:left;
@@ -417,17 +476,17 @@ div.continue span#place_order {
 }
 div.continue span#confirm {
     background-color: pink;
-    left: 60%;
+    display: inline-block;
+    float: left;
     padding: 8px 30px;
     position: relative;
-    top: 20%;
 }
 div.continue span#back {
     background-color: pink;
-    left: 0;
+    display: inline-block;
+    float: right;
     padding: 8px 30px;
     position: relative;
-    top: 20%;
 }
 div.continue span:hover {
     cursor: pointer;
@@ -443,9 +502,8 @@ div#detail_info {
     height: 100%;
 }
 table#detail_info_table {
-    left: 8%;
+    margin: 10% auto 8%;
     position: relative;
-    top: 10%;
     width: 86%;
 }
 table#detail_info_table tr {
@@ -459,4 +517,10 @@ table#detail_info_table input {
     font-size: 13px;
     padding: 2px;
     width: 90%;
+}
+div.sidebar_buttons_wrapper {
+    height: 38px;
+    margin-left: auto;
+    margin-right: auto;
+    width: 60%;
 }

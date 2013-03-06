@@ -11,13 +11,15 @@ body {
 .preload {
     display: none;
 }
+
 .body_container {
-    background-color: #D7DBE0;
     height: 100%;
-    min-width: 1000px;
-    position: absolute;
     width: 100%;
+    min-width: 1000px;
+    background-color: skyblue;
+    position: fixed;
 }
+
 a img {
     border: 0 none;
     outline: 0 none;
@@ -28,22 +30,24 @@ a {
 div.header_container {
     position: fixed;
     top: 0;
-    width: 75%;
-    z-index: 10;
+    z-index: 2;
 }
 div.admin_header_container {
     position: fixed;
     top: 0;
     width: 100%;
-    z-index: 10;
+    z-index: 1;
 }
 div.banner {
-    background-color: skyblue;
     background-repeat: repeat-x;
-    height: 33px;
     position: absolute;
-    width: 100%;
 }
+
+div.banner img {
+    margin-left: 35px;
+    margin-top: 20px;
+}
+
 div.admin_banner {
     background-color: skyblue;
     background-repeat: repeat-x;
@@ -52,14 +56,8 @@ div.admin_banner {
     width: 100%;
 }
 div.main_container {
-    width: 100%;
-}
-div.body_bg {
-    background-color: #FCFCFC;
     height: 100%;
-    position: fixed;
     width: 100%;
-    z-index: -2;
 }
 div.admin_body_bg {
     background-color: #FCFCFC;
@@ -91,9 +89,40 @@ div.mask {
     z-index: 1;
 }
 img.loading {
-    position: absolute;
-    top: 26%;
-    left: 36%;
-    width: 6%;
+    display: block;
     height: auto;
+    position: absolute;
+    right: 19px;
+    top: 42px;
+    width: 5%;
+}
+
+div.footer {
+    bottom: 0;
+    z-index: 1;
+    background-image: url("/daigou/application/assets/images/global/diggos_tree.png"); 
+    background-repeat: repeat-x;
+    height: 371px;
+    position: fixed;
+    width: 100%;
+}
+
+h3 {
+    font-weight: normal;
+    font-size: 16px;
+}
+input {
+    border: 1px solid #AEAEAE;
+    font-size: 14px;
+    padding: 4px 5px;
+}
+table#basic_table tr {
+    height: 36px;
+}
+
+table#basic_table tr:first-child {
+    height: 22px;
+}
+table#basic_table tr:nth-child(2) {
+    height: 25px;
 }

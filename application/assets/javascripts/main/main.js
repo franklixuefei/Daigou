@@ -13,7 +13,14 @@ var Daigou = function() {
         // prepare to listen
         page.init();
         taobaoURL.listenInput();
-        sidebarResizable.init();
+        //sidebarResizable.init(); // for now disable resizable, so the following bind code is for now here.
+        $('span#toggle_sidebar').bind('click', function() {
+            sidebarResizable.toggleme();
+        }).bind('mouseenter', function() {
+            $(this).find('span').css('background-position', 'right');
+        }).bind('mouseleave', function() {
+            $(this).find('span').css('background-position', '');
+        });
         shoppingCart.init();
         orders.init();
         controller.init();
@@ -26,12 +33,35 @@ var Daigou = function() {
         };
         
         var showStartPage = function() {
-            $('div.main_content').text('initial page');
+            // restore location of input url and welcome text
+            $('div.main_content').children().remove();
+            mainWrapperRestore();
+            
+        };
+        
+        var mainWrapperRelocation = function() { // animation to relocate input field and welcome text
+            $('div#input_tag').fadeOut(200);
+            $('div#welcome_text').fadeOut(200);
+            $('div.main_wrapper').css('overflow', 'hidden');
+            $('div.main_content_wrapper').animate({
+                top: "10%"
+            }, 200, function() {
+                $('div.main_wrapper').css('overflow', '');
+            });
+        };
+        
+        var mainWrapperRestore = function() { // animation to restore location of input field and welcome text
+            $('div#input_tag').fadeIn(200);
+            $('div#welcome_text').fadeIn(200);
+            $('div.main_content_wrapper').animate({
+                top: "32%"
+            }, 200);
         };
         
         return {
             init: initialize,
-            showStartPage: showStartPage
+            showStartPage: showStartPage,
+            resultPrep: mainWrapperRelocation
         }
     }();
     
@@ -61,7 +91,8 @@ var Daigou = function() {
                         
                         /* insert loading here */
                         if (xhr) xhr.abort(); // magic happens here
-                        $('div.main_wrapper').prepend($('<div>').attr('class', 'mask').append($('<img>').attr('class', 'loading').attr('src', 'application/assets/images/global/loading.gif')));
+                        //$('div.main_wrapper').prepend($('<div>').attr('class', 'mask').append($('<img>').attr('class', 'loading').attr('src', 'application/assets/images/global/loading.gif')));
+                        $('div.url_input').append($('<img>').attr('class', 'loading').attr('src', 'application/assets/images/global/loading.gif'));
                         xhr = $.ajax({
                             type: "POST",
                             data: {
@@ -80,10 +111,9 @@ var Daigou = function() {
                             success: function (j) {
                                 //if (j.item.num_iid == parseInt(URIHelper.lookupQuery(input.val(), 'id'))) { // only show corresponding info
                                 window.item = j.item;
-                                $('div.main_content').text('');
+                                $('img.loading').remove();
                                 $('div.main_content').children().remove();
                                 showResult(j);
-                                $('div.mask').remove();
                                 sidebarResizable.reinit();
                             //}
                             },
@@ -96,7 +126,7 @@ var Daigou = function() {
                                     } else if (textStatus == 'timeout' && errorThrown == 'timeout') {
                                         prev_id = null; // reset prev_id so that user could try all possible urls out.
                                         showResult(-2);
-                                        $('div.mask').remove();
+                                    //$('div.mask').remove();
                                     }
                                     
                                 }
@@ -112,30 +142,41 @@ var Daigou = function() {
             
         };
         var showResult = function(list) {
-            if (list == -1) $('div.main_content').text('invalid url'); // TODO
+            if (list == -1) {
+                $('div.main_content').children().remove();
+                $('div.main_content').append($('<div>').attr('class', 'block_wrapper').append($('<div>').attr('class', 'block').text('请输入正确的商品地址'))); // TODO
+            }
             else if (list == -2) {
-                alert('请求超时，请重试');
+                $('div.main_content').children().remove();
+                $('div.main_content').append($('<div>').attr('class', 'block_wrapper').append($('<div>').attr('class', 'block').text('请求超时，请重试'))); // TODO
             } else {
                 if (list.sub_code && list.sub_code == 'isv.item-get-service-error:ITEM_NOT_FOUND') { // item not found
-                    
+                    $('div.main_content').children().remove();
+                    $('div.main_content').append($('<div>').attr('class', 'block_wrapper').append($('<div>').attr('class', 'block').text('对不起，此商品不存在'))); // TODO
                 } else if (list.sub_code && list.sub_code == 'isv.item-is-delete:invalid-numIid') { // item has been deleted
-                    
-                } else if (list.sub_code && list.code == 0) { // no connection
-                    
+                    $('div.main_content').children().remove();
+                    $('div.main_content').append($('<div>').attr('class', 'block_wrapper').append($('<div>').attr('class', 'block').text('对不起，此商品已被删除'))); // TODO
+                } else if (list.code == 0) { // no connection
+                    $('div.main_content').children().remove();
+                    $('div.main_content').append($('<div>').attr('class', 'block_wrapper').append($('<div>').attr('class', 'block').text('无网络连接'))); // TODO
                 } else if (list.item){ // guarantee that item exists.
+                    // relocate input field and hide welcome text first;
+                    page.resultPrep();
                     var item = list.item;
-                    var purchase_button = $('<button>').attr('id', 'purchase').text('购买');
+                    var purchase_button = $('<div>').attr('id', 'purchase');
                     purchase_button.bind('click', function() {
                         controller.purchase();
                     });
-                    var basic_info_container = $('<div>').attr('class', 'basic_info_container main_block').appendTo('div.main_content');
+                    var basic_info_container = $('<div>').attr('class', 'basic_info_container main_block block');
+                    var block_wrapper = $('<div>').attr('class', 'block_wrapper');
+                    
                     basic_info_container
-                    .append(
-                        $('<div>').attr('class', 'block_header clearfix')
-                        .append($('<div>').attr('class', 'block_header_icon').attr('id', 'basic'))
-                        .append($('<div>').attr('class', 'block_header_title').attr('id', 'basic').text('基本信息'))
-                        .append($('<span>').attr('class', 'list_period').text('上架时限：' + item.list_time + ' - ' + item.delist_time))
-                        )
+                    //                    .append(
+                    //                        $('<div>').attr('class', 'block_header clearfix')
+                    //                        .append($('<div>').attr('class', 'block_header_icon').attr('id', 'basic'))
+                    //                        .append($('<div>').attr('class', 'block_header_title').attr('id', 'basic').text('基本信息'))
+                    //                        .append($('<span>').attr('class', 'list_period').text('上架时限：' + item.list_time + ' - ' + item.delist_time))
+                    //                        )
                     .append(
                         $('<div>').attr('class', 'block_content')
                         .append(
@@ -144,26 +185,22 @@ var Daigou = function() {
                             )
                         .append(
                             $('<div>').attr('class', 'basic_table')
-                            .append($('<h3>').html(item.title + '<span id="stuff_status">'+ (item.stuff_status == 'new'? '<span style="color: green;">[全新]</span>' : (item.stuff_status == 'unused'? '<span style="color: darkgreen;">[闲置]</span>' : '<span style="color: green;">[二手]</span>')) +'</span>'+
-                                '<span id="approve_status">'+ (item.approve_status == 'onsale'? '<span style="color: green;">[出售中]</span>' : '<span style="color: gray;">[已下架]</span>') +'</span>'+
-                                '<span id="detail_url"><a target="_blank" href="'+ item.detail_url +'">[查看商品页面]</a></span>'
-                                ))
+                            .append($('<h3>').text(item.title))
                             .append($('<table>').attr('id', 'basic_table')
-                                .append('<tr><td>原价</td><td>'+item.price+' 元</td></tr>'+
-                                    '<tr><td>促销</td><td>'+ (item.has_discount? '正在促销<a target="_blank" href="'+ item.detail_url +'">查看促销价</a>' : '无促销活动') +'</td></tr>'+
-                                    //'<tr><td>商品所在地</td><td>'+ (item.location) +'</td></tr>'+
-                                    '<tr><td>配送</td><td>'+ (item.post_fee? '平邮：'+item.post_fee+' 元<br/>' : '') + (item.express_fee? '快递：'+ item.express_fee +' 元<br/>' : '') + (item.ems_fee? 'EMS：'+ item.ems_fee +' 元</td>' : '') + '</tr>'+
-                                    '<tr><td>给代购商留言</td><td><textarea id="msg_to_agent" placeholder="请注明商品促销价，以及其他商品具体信息。例如：尺码、颜色、型号、重量等等"></textarea></td>' 
+                                .append('<tr><td>原价：</td><td>'+item.price+' 元</td></tr>'+
+                                    '<tr><td>促销：</td><td>'+ (item.has_discount? '正在促销<a target="_blank" href="'+ item.detail_url +'">查看促销价</a>' : '无促销活动') +'</td></tr>'+
+                                    '<tr><td>数量：</td><td><input id="amount_input" type="number" value="1" min="0" max="'+ (parseInt(item.num)-parseInt(item.with_hold_quantity)) +'"/></td>' +
+                                    '<tr><td>其他：</td><td><textarea id="msg_to_agent" placeholder="请注明商品促销价，以及其他商品具体信息。例如：尺码、颜色、型号、重量等等"></textarea></td>' 
                                     )
                                 )
                             .append(
                                 $('<div>').attr('class', 'button_wrapper')
-                                .append(
-                                    $('<span>').attr('id', 'amount_container')
-                                    .append(
-                                        '<span id="amount">数量：</span><input id="amount_input" type="number" min="0" max="'+ (parseInt(item.num)-parseInt(item.with_hold_quantity)) +'"/>'
-                                        )
-                                    )
+                                //                                .append(
+                                //                                    $('<span>').attr('id', 'amount_container')
+                                //                                    .append(
+                                //                                        '<span id="amount">数量：</span><input id="amount_input" type="number" min="0" max="'+ (parseInt(item.num)-parseInt(item.with_hold_quantity)) +'"/>'
+                                //                                        )
+                                //                                    )
                                 .append(
                                     purchase_button
                                     )
@@ -181,18 +218,20 @@ var Daigou = function() {
                             )
                             
                         );
-                    var detail_container = $('<div>').attr('class', 'detail_container main_block').appendTo('div.main_content');
-                    detail_container.append(
-                        $('<div>').attr('class', 'block_header clearfix')
-                        .append($('<div>').attr('class', 'block_header_icon').attr('id', 'detail'))
-                        .append($('<div>').attr('class', 'block_header_title').attr('id', 'detail').text('详细信息'))
-                    
-                        )
-                    .append(
-                        $('<div>').attr('class', 'block_content')
-                        .append(item.desc)
-                        );
-                    
+                    //                    var detail_container = $('<div>').attr('class', 'detail_container main_block').appendTo('div.main_content');
+                    //                    detail_container.append(
+                    //                        $('<div>').attr('class', 'block_header clearfix')
+                    //                        .append($('<div>').attr('class', 'block_header_icon').attr('id', 'detail'))
+                    //                        .append($('<div>').attr('class', 'block_header_title').attr('id', 'detail').text('详细信息'))
+                    //                    
+                    //                        )
+                    //                    .append(
+                    //                        $('<div>').attr('class', 'block_content')
+                    //                        .append(item.desc)
+                    //                        );
+                 
+                    basic_info_container = block_wrapper.append(basic_info_container);
+                    basic_info_container.appendTo('div.main_content');
                 }
                 
             }
@@ -453,6 +492,7 @@ var Daigou = function() {
                 },
                 url: "/daigou/index.php/item/purchase",
                 success: function (j) {
+                    sidebarResizable.expand();
                     $('input#amount_input').val('');
                     $('textarea#msg_to_agent').val('');
                     // TODO add notice bar
@@ -599,12 +639,12 @@ var Daigou = function() {
             var order_status = $('<div>').attr('class', 'order_status');
             
             order_header.append($('<div>').attr('class', 'order_num').text('#'+item.track_num))
-                .append($('<div>').attr('class', 'order_created_at').text(item.created_at));
+            .append($('<div>').attr('class', 'order_created_at').text(item.created_at));
             
             order_content.append($('<div>').attr('class','thumb_pic_container').append($('<a>').attr('href', item.detail_url).attr('target', '_blank').append($('<img>').attr('src', item.pic_url))))
             .append($('<div>').attr('class','middle_content')
                 .append($('<div>').attr('class', 'orders_item_title').text(item.msg?cutstring(item.title, 28, '...'):cutstring(item.title, 75, '...')))
-                .append($('<div>').attr('class', 'orders_item_msg').text(cutstring(item.msg, 90, '...')))
+                .append($('<div>').attr('class', 'orders_item_msg').text(cutstring(item.msg, 100, '...')))
                 )
             .append($('<div>').attr('class','orders_item_amount').append($('<span>').text('×'+item.amount)));
             if (parseInt(item.status) == 0) {
@@ -640,7 +680,7 @@ var Daigou = function() {
                     break;
             }
             order_status.append($('<div>').attr('class', 'order_status_text').html(status_text))
-                .append($('<div>').attr('class', 'order_updated_at').text(item.updated_at));
+            .append($('<div>').attr('class', 'order_updated_at').text(parseInt(item.status)!=0?item.updated_at:''));
             
             order_header.appendTo(entry);
             order_content.appendTo(entry);
@@ -713,43 +753,53 @@ var Daigou = function() {
     }();
     
     var sidebarResizable = function() {
-        var toggle = 1;
+        var initialized = 0;
+        var toggle = 0; // initially folded
         var initialize = function() {
+            initialized = 1;
             leftWindowOrigWidth = $('div.main_wrapper').width();
             //rightWindowOrigWidth = $('div.vertical_drag_bar').parent().width();
             resizeWidth();
             resizeHeight();
             $('span#toggle_sidebar').bind('click', function() {
                 toggle_sidebar();
+            }).bind('mouseenter', function() {
+                $(this).find('span').css('background-position', 'right');
+            }).bind('mouseleave', function() {
+                $(this).find('span').css('background-position', '');
             });
         };
         
         var toggle_sidebar = function() {
             if (toggle == 0) {
                 // show sidebar
-                $('div.side_wrapper').show();
-                $('div.item_control').css('width', '75%');
+                $('div.side_wrapper').css('right', '0');
                 $('div.main_wrapper').css('width', '75%');
-                $('div.header_container').css('width', '75%');
-                $('span#toggle_sidebar').html('&rarr;');
+                $('span#toggle_sidebar').find('span').css('background-image', 'url("application/assets/images/global/right_arrow.png")').css('left', '9px');
                 toggle = 1;
             } else {
                 // hide sidebar
-                $('div.side_wrapper').hide();
-                $('div.item_control').css('width', '100%');
-                $('div.main_wrapper').css('width', '100%');
-                $('div.header_container').css('width', '100%');
-                $('span#toggle_sidebar').html('&larr;');
+                $('div.side_wrapper').css('right', '');
+                $('div.main_wrapper').css('width', '');
+                $('span#toggle_sidebar').find('span').css('background-image', '').css('left', '');
                 toggle = 0;
             }
         };
         
+        var expand_sidebar = function() {
+            if (toggle == 0) {
+                toggle_sidebar();
+            }  
+        };
+        
         var reinitialize = function() {
-            $(document).unbind('mousemove'); // unbind mousemove
-            $('div.vertical_drag_bar').unbind('mousedown');
-            leftWindowOrigWidth = $('div.main_wrapper').width();
-            //rightWindowOrigWidth = $('div.vertical_drag_bar').parent().width(); /*don't reinit right window original width because it isn't changed*/
-            resizeWidth();
+            if (initialized) {
+                $(document).unbind('mousemove'); // unbind mousemove
+                $('div.vertical_drag_bar').unbind('mousedown');
+                leftWindowOrigWidth = $('div.main_wrapper').width();
+                //rightWindowOrigWidth = $('div.vertical_drag_bar').parent().width(); /*don't reinit right window original width because it isn't changed*/
+                resizeWidth();
+            }
         };
         var resizeWidth = function() {
             
@@ -781,13 +831,14 @@ var Daigou = function() {
         };
         return {
             init: initialize,
-            reinit : reinitialize
+            reinit : reinitialize,
+            toggleme: toggle_sidebar,
+            expand: expand_sidebar
         }
     }();
     
     return {
         init : initialize
-        
     }
     
 }();
